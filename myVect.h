@@ -29,6 +29,27 @@ public:
             m_data[i] = num;
         }
     }
+    myVector(const myVector& a) {
+        m_size = a.m_size;
+        m_capacity = a.m_capacity;
+        m_data = new int[a.m_capacity];
+        for (int i = 0; i < m_size; i++) {
+            m_data[i] = a.m_data[i];
+        }
+    }
+    myVector& operator=(const myVector& a) {
+        if (this == &a) {
+            return *this;
+        }
+        delete[] m_data;
+        m_size = a.m_size;
+        m_capacity = a.m_capacity;
+        m_data = new int[m_capacity];
+        for (int i = 0; i < m_size; i ++) {
+            m_data[i] = a.m_data[i];
+        }
+        return *this;
+    }
     ~myVector() {
         delete[] m_data;
     };
