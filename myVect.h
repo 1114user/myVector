@@ -1,10 +1,10 @@
 #pragma once
 #include <iostream>
-
+#include <memory>
 
 class myVector {
 private:
-    int* m_data;
+    std::unique_ptr<int[]> m_data;
     size_t m_size;
     size_t m_capacity;
 public:
@@ -16,15 +16,12 @@ public:
     myVector(int s) {
         m_size = s;
         m_capacity = s;
-        m_data = new int[m_size];
-        for (int i = 0; i < s; i++) {
-            m_data[i] = 0;
-        }
+        m_data = std::make_unique<int[]>(s);
     }
     myVector(int s, int num) {
         m_size = s;
         m_capacity = s;
-        m_data = new int[m_size];
+        m_data = std::make_unique<int[]>(s);
         for (int i = 0; i < s; i++) {
             m_data[i] = num;
         }
@@ -32,7 +29,7 @@ public:
     myVector(const myVector& a) {
         m_size = a.m_size;
         m_capacity = a.m_capacity;
-        m_data = new int[a.m_capacity];
+        m_data = std::make_unique<int[]>(m_capacity);
         for (int i = 0; i < m_size; i++) {
             m_data[i] = a.m_data[i];
         }
@@ -41,27 +38,24 @@ public:
         if (this == &a) {
             return *this;
         }
-        delete[] m_data;
         m_size = a.m_size;
         m_capacity = a.m_capacity;
-        m_data = new int[m_capacity];
+        m_data = std::make_unique<int[]>(m_capacity);
         for (int i = 0; i < m_size; i ++) {
             m_data[i] = a.m_data[i];
         }
         return *this;
     }
-    ~myVector() {
-        delete[] m_data;
-    };
+    ~myVector() {};
+
     void push_back(int num) {
         if (m_size ==  m_capacity) {
             m_capacity = m_capacity == 0? 1:m_capacity*=2;
-            int* temp = new int[m_capacity];
+            std::unique_ptr<int[]> temp = std::make_unique<int[]>(m_capacity);
             for (int i = 0; i < m_size; i++) {
                 temp[i] = m_data[i];
             }
-            delete[] m_data;
-            m_data = temp;
+            m_data = std::move(temp);
         }
         m_data[m_size] = num;
         m_size++;
